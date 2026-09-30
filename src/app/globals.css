@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #fff8f0;
+  --color-surface: #fefcf9;
+  --color-surface-alt: #f5ede3;
+  --color-line: #e8dfd3;
+  --color-line-control: #b9ad9e;
+  --color-ink: #2d3047;
+  --color-ink-muted: #575964;
+  --color-ink-faint: #9b9dab;
+  --color-shadow: #d4c9bb;
+
+  --color-teal: #7ecec5;
+  --color-teal-deep: #5fb5ab;
+  --color-teal-soft: #e3f4f1;
+  --color-purple: #a78bca;
+  --color-purple-soft: #efe8f6;
+  --color-gold: #e8c77b;
+  --color-gold-soft: #faf0d9;
+  --color-coral: #e8927c;
+  --color-coral-soft: #fbe6e0;
+  --color-danger: #b4432c;
+
+  --font-display: var(--font-fredoka), ui-rounded, system-ui, sans-serif;
+  --font-label: var(--font-nunito), system-ui, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  --radius-card: 20px;
+  --radius-control: 16px;
+  --radius-inner: 12px;
+
+  --shadow-clay: 3px 3px 0 0 var(--color-shadow);
+  --shadow-clay-pressed: 1px 1px 0 0 var(--color-shadow);
+  --shadow-clay-bold: 3px 3px 0 0 var(--color-ink);
+  --shadow-clay-bold-pressed: 1px 1px 0 0 var(--color-ink);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    color-scheme: light;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-teal-deep);
+    outline-offset: 2px;
+  }
+  input, textarea, select, button {
+    font: inherit;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .pressable {
+    transition-property: transform, box-shadow, background-color;
+    transition-duration: 120ms;
+    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+  }
+  .pressable:active:not(:disabled) {
+    transform: translate(2px, 2px) scale(0.97);
+  }
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .pressable:active:not(:disabled) {
+    transform: none;
+  }
+}
