@@ -1,95 +1,215 @@
 import type { Metadata } from "next";
 import {
+  ArrowLeft,
   ArrowRight,
   CalendarDays,
+  Clock3,
+  MapPin,
   Plus,
-  Sparkles,
-  UsersRound,
 } from "lucide-react";
 import Link from "next/link";
 
+import { EnsureScheduleWindowForm } from "@/features/scheduling/forms";
+import {
+  getAgendaForDay,
+  getTeacherProfile,
+} from "@/features/scheduling/queries";
 import { getStudentCount } from "@/features/students/queries";
-import { formatLocalDate, jakartaDateInputValue } from "@/lib/format";
+import { dateInputValueInTimezone, indonesiaDayUtcBounds } from "@/lib/dates";
+import { formatLocalDate } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Hari ini" };
 
-export default async function TodayPage() {
-  const studentCount = await getStudentCount();
-  const today = formatLocalDate(jakartaDateInputValue(), { weekday: "long" });
+function shiftDate(date: string, days: number) {
+  const shifted = new Date(date + "T00:00:00Z");
+  shifted.setUTCDate(shifted.getUTCDate() + days);
+
+  return shifted.toISOString().slice(0, 10);
+}
+
+function timeLabel(value: string, timezone: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: timezone,
+  }).format(new Date(value));
+}
+
+function stateLabel(state: string, startsAt: string) {
+  if (state === "completed") return "Selesai dicatat";
+
+  if (state === "student_absent") return "Murid izin";
+
+  if (state === "teacher_cancelled") return "Dibatalkan";
+
+  if (new Date(startsAt).getTime() < Date.now()) return "Belum dicatat";
+
+  return "Terjadwal";
+}
+
+function understandingLabel(value: string) {
+  if (value === "independent") return "Mandiri";
+
+  if (value === "assisted") return "Masih perlu bantuan";
+
+  return "Perlu diulang";
+}
+
+export default async function TodayPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) {
+  const profile = await getTeacherProfile();
+  const params = await searchParams;
+  const today = dateInputValueInTimezone(new Date(), profile.timezone);
+
+  let selectedDate = today;
+
+  if (params.date) {
+    try {
+      indonesiaDayUtcBounds(params.date, profile.timezone);
+      selectedDate = params.date;
+    } catch {
+      selectedDate = today;
+    }
+  }
+
+  const [{ sessions }, studentCount] = await Promise.all([
+    getAgendaForDay(selectedDate),
+    getStudentCount(),
+  ]);
 
   return (
     <>
       <div className="page-topline">
         <div>
-          <p className="eyebrow">{today}</p>
-          <h1>Hari ini</h1>
+          <p className="eyebrow">Agenda belajar</p>
+          <h1>
+            {selectedDate === today
+              ? "Hari ini"
+              : formatLocalDate(selectedDate)}
+          </h1>
           <p className="page-description">
-            Semua kegiatan lesmu akan tertata di satu tempat.
+            {sessions.length === 1
+              ? "1 sesi pada tanggal ini."
+              : sessions.length + " sesi pada tanggal ini."}
           </p>
         </div>
-      </div>
-
-      <section className="hero-card" aria-labelledby="today-hero-title">
-        <p className="eyebrow">Ruang kerjamu</p>
-        <h2 id="today-hero-title">
-          Mengajar lebih tenang, mencatat lebih rapi.
-        </h2>
-        <p>
-          Mulai dengan menyimpan data murid dan pola tarifnya. Jadwal, catatan
-          pertemuan, serta tagihan akan mengikuti alur belajarmu.
-        </p>
-        <Link
-          className="button"
-          href={studentCount === 0 ? "/students/new" : "/students"}
-        >
-          {studentCount === 0 ? (
-            <Plus aria-hidden="true" size={18} />
+        <div className="agenda-tools">
+          {selectedDate === today ? (
+            <EnsureScheduleWindowForm today={today} />
           ) : (
-            <ArrowRight aria-hidden="true" size={18} />
+            <Link
+              className="button button-secondary button-small"
+              href="/today"
+            >
+              Hari ini
+            </Link>
           )}
-          {studentCount === 0 ? "Tambah murid pertama" : "Lihat daftar murid"}
-        </Link>
-      </section>
+          <Link className="button button-small" href="/students">
+            <Plus aria-hidden="true" size={17} /> Tambah sesi
+          </Link>
+        </div>
+      </div>
 
-      <div className="stats-grid stats-grid-single">
-        <section className="card stat-card" aria-label="Jumlah murid aktif">
-          <p className="stat-label">
-            <UsersRound aria-hidden="true" size={16} /> Murid aktif
-          </p>
-          <p className="stat-value">{studentCount}</p>
-          <p className="stat-note">Data murid yang sedang belajar</p>
-        </section>
-        <section
-          className="card stat-card stat-card-upcoming"
-          aria-label="Agenda hari ini"
+      <nav className="date-switcher" aria-label="Pilih tanggal agenda">
+        <Link
+          className="button button-secondary button-small"
+          href={"/today?date=" + shiftDate(selectedDate, -1)}
         >
-          <p className="stat-label">
-            <CalendarDays aria-hidden="true" size={16} /> Agenda hari ini
-          </p>
-          <p className="stat-value stat-value-word">Siap ditata</p>
-          <p className="stat-note">
-            <Sparkles aria-hidden="true" size={14} /> Jadwal mingguan menjadi
-            langkah berikutnya
-          </p>
-        </section>
-      </div>
+          <ArrowLeft aria-hidden="true" size={16} /> Sebelumnya
+        </Link>
+        <time dateTime={selectedDate}>
+          {formatLocalDate(selectedDate, {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+          })}
+        </time>
+        <Link
+          className="button button-secondary button-small"
+          href={"/today?date=" + shiftDate(selectedDate, 1)}
+        >
+          Berikutnya <ArrowRight aria-hidden="true" size={16} />
+        </Link>
+      </nav>
 
-      <div className="section-heading">
-        <h2>Langkah berikutnya</h2>
-      </div>
-      <section className="card card-pad next-step-card">
-        <div className="next-step-icon">
-          <CalendarDays aria-hidden="true" size={21} />
-        </div>
-        <div>
-          <h3>Atur jadwal belajar</h3>
+      {sessions.length > 0 ? (
+        <section className="session-list" aria-label="Sesi pada tanggal ini">
+          {sessions.map((session) => (
+            <Link
+              className="session-card card"
+              href={"/sessions/" + session.id}
+              key={session.id}
+            >
+              <div className="session-time">
+                <strong>
+                  {timeLabel(session.starts_at, profile.timezone)}
+                </strong>
+                <span>{timeLabel(session.ends_at, profile.timezone)}</span>
+              </div>
+              <div className="session-copy">
+                <p className="session-student">
+                  {session.student?.name ?? "Murid"}
+                </p>
+                <p className="session-meta">
+                  {session.student?.address_hint ? (
+                    <>
+                      <MapPin aria-hidden="true" size={14} />
+                      {session.student.address_hint}
+                    </>
+                  ) : (
+                    <>
+                      <Clock3 aria-hidden="true" size={14} />
+                      {session.schedule_rule_id
+                        ? "Jadwal rutin"
+                        : "Sesi satu kali"}
+                    </>
+                  )}
+                </p>
+                {session.note && session.topic ? (
+                  <p className="session-last-note">
+                    Terakhir: {session.topic.name} ·{" "}
+                    {understandingLabel(session.note.understanding)}
+                  </p>
+                ) : null}
+              </div>
+              <span
+                className={"badge session-state session-state-" + session.state}
+              >
+                {stateLabel(session.state, session.starts_at)}
+              </span>
+            </Link>
+          ))}
+        </section>
+      ) : (
+        <section className="card empty-state">
+          <span className="empty-icon">
+            <CalendarDays aria-hidden="true" size={26} />
+          </span>
+          <h2>Belum ada sesi di tanggal ini</h2>
           <p>
-            Tambahkan jadwal rutin atau sesi satu kali, lalu catat hasil belajar
-            setelah mengajar.
+            {studentCount === 0
+              ? "Tambahkan murid dulu, lalu atur jadwal rutin atau sesi satu kali."
+              : "Buat sesi satu kali dari detail murid atau perbarui agenda rutin."}
           </p>
-        </div>
-        <span className="badge next-step-badge">Segera hadir</span>
-      </section>
+          <Link
+            className="button"
+            href={studentCount === 0 ? "/students/new" : "/students"}
+          >
+            {studentCount === 0 ? "Tambah murid" : "Pilih murid"}
+          </Link>
+        </section>
+      )}
+
+      <div className="callout agenda-note">
+        <CalendarDays aria-hidden="true" size={18} />
+        <span>
+          Sesi yang lewat waktunya tetap berstatus “Belum dicatat” sampai kamu
+          mengubah statusnya.
+        </span>
+      </div>
     </>
   );
 }

@@ -1310,3 +1310,575 @@ a.quick-action:hover {
     display: none;
   }
 }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.student-actions,
+.agenda-tools,
+.report-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.agenda-tools {
+  justify-content: flex-end;
+}
+
+.inline-action-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.inline-action-form .form-feedback,
+.end-rule-form .form-feedback,
+.void-payment-form .form-feedback {
+  flex-basis: 100%;
+  margin-top: 3px;
+}
+
+.input-compact {
+  min-height: 42px;
+  padding-block: 8px;
+  font-size: 14px;
+}
+
+.date-switcher {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.date-switcher > :last-child {
+  justify-self: end;
+}
+
+.date-switcher time {
+  color: var(--ink-muted);
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.session-list,
+.schedule-list,
+.invoice-list {
+  display: grid;
+  gap: 12px;
+}
+
+.session-card {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 92px;
+  padding: 16px;
+  transition-property: transform, border-color, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.session-card:hover,
+.invoice-card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}
+
+.session-time {
+  display: grid;
+  gap: 3px;
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.session-time strong {
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.session-copy {
+  min-width: 0;
+}
+
+.session-student,
+.invoice-student {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.session-meta,
+.session-last-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 4px 0 0;
+  color: var(--ink-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.session-state-completed,
+.invoice-status-paid {
+  border-color: color-mix(in srgb, var(--success) 38%, var(--line));
+  background: color-mix(in srgb, var(--success) 9%, var(--surface));
+  color: var(--success);
+}
+
+.session-state-student_absent,
+.session-state-teacher_cancelled,
+.badge-muted,
+.invoice-status-no_charge {
+  border-color: var(--line);
+  background: var(--surface-muted);
+  color: var(--ink-muted);
+}
+
+.invoice-status-partial {
+  border-color: color-mix(in srgb, var(--warning) 35%, var(--line));
+  background: color-mix(in srgb, var(--warning) 10%, var(--surface));
+  color: var(--warning);
+}
+
+.invoice-status-unpaid,
+.invoice-status-overdue {
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--line));
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.agenda-note {
+  margin-top: 22px;
+}
+
+.session-location {
+  margin-bottom: 18px;
+}
+
+.session-primary-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.session-primary-action p:last-child {
+  margin-bottom: 0;
+}
+
+.session-note-card {
+  margin-top: 22px;
+}
+
+.session-note-text {
+  margin-bottom: 8px;
+  color: var(--ink-muted);
+  white-space: pre-wrap;
+}
+
+.previous-learning {
+  margin-bottom: 16px;
+}
+
+.schedule-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 17px;
+}
+
+.schedule-title {
+  margin: 0;
+  font-weight: 800;
+}
+
+.schedule-card .muted-copy {
+  margin: 4px 0 0;
+  font-size: 12px;
+}
+
+.end-rule-form {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.end-rule-form .input {
+  width: auto;
+}
+
+.compact-empty {
+  padding-block: 26px;
+}
+
+.action-card {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.action-card .field {
+  width: min(100%, 520px);
+}
+
+.understanding-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.understanding-field legend {
+  margin-bottom: 7px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.understanding-field label {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.understanding-field input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.history-list {
+  overflow: hidden;
+}
+
+.history-row {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.history-row:last-child {
+  border-bottom: 0;
+}
+
+a.history-row:hover {
+  background: var(--surface-muted);
+}
+
+.history-row > span:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.history-row strong {
+  font-size: 13px;
+}
+
+.history-row small {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.report-preview {
+  width: min(100%, 760px);
+}
+
+.report-text {
+  margin: 0;
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.report-actions {
+  margin-top: 18px;
+}
+
+.report-disclaimer {
+  margin-top: 12px;
+}
+
+.invoice-period-form {
+  justify-content: flex-end;
+}
+
+.invoice-switcher {
+  margin-top: 5px;
+}
+
+.invoice-card {
+  display: grid;
+  gap: 14px;
+  padding: 17px;
+  transition-property: transform, border-color;
+  transition-duration: 120ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+.invoice-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.invoice-card-heading > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.invoice-number {
+  margin: 3px 0 0;
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.invoice-card-totals {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.invoice-card-totals span {
+  display: grid;
+  gap: 2px;
+}
+
+.invoice-card-totals strong {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.invoice-note {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.invoice-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 20px;
+}
+
+.invoice-totals div {
+  display: grid;
+  gap: 5px;
+}
+
+.invoice-totals span {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.invoice-totals strong {
+  font-size: clamp(15px, 2vw, 19px);
+  font-variant-numeric: tabular-nums;
+}
+
+.invoice-items {
+  width: min(100%, 800px);
+}
+
+.invoice-item-void {
+  color: var(--ink-faint);
+  opacity: 0.7;
+}
+
+.invoice-item-amount {
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.invoice-item-amount small {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink-faint);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.payment-list {
+  width: min(100%, 800px);
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+  background: var(--surface);
+  box-shadow: 0 3px 0 var(--clay-shadow);
+}
+
+.payment-row {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.payment-row:last-child {
+  border-bottom: 0;
+}
+
+.payment-row-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.payment-row-main p {
+  margin: 4px 0 0;
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+
+.void-payment-details summary {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.void-payment-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.void-payment-form .field-label {
+  grid-column: 1 / -1;
+}
+
+.void-payment-form .input {
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .student-actions,
+  .agenda-tools {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .page-topline {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .session-card {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .session-card > .badge {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .session-primary-action {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .invoice-period-form {
+    justify-content: flex-start;
+  }
+
+  .invoice-totals {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .invoice-totals div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 48px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .invoice-totals div:last-child {
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .date-switcher {
+    grid-template-columns: 1fr auto;
+  }
+
+  .date-switcher time {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .date-switcher > :last-child {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .invoice-card-heading {
+    flex-wrap: wrap;
+  }
+
+  .invoice-card-heading > .badge {
+    margin-left: 56px;
+  }
+
+  .invoice-card-totals {
+    flex-direction: column;
+  }
+
+  .void-payment-form {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,6 +1,6 @@
 # Teman Les
 
-Mobile-first workspace for independent tutors to organize students, session notes, and billing. The initial slice provides invited-user authentication, teacher onboarding, and owner-isolated student and rate setup.
+Mobile-first workspace for independent tutors to organize students, session notes, schedules, and billing. The P0 slice covers invited-user access through session reporting and payment tracking.
 
 ## Local setup
 
@@ -10,13 +10,17 @@ Mobile-first workspace for independent tutors to organize students, session note
 4. Invite pilot teachers through Supabase Auth. Public signup is not included.
 5. Run `npm install`, then `npm run dev`.
 
-`npm run check` runs Oxlint, TypeScript, and the production build. No sample student or parent data is seeded.
+`npm run check` runs formatting, Oxlint, TypeScript, unit tests, and the production build. No sample student or parent data is seeded.
 
-## Current slice
+## P0 workflows
 
 - Email/password login, logout, reset password, and invited-user confirmation.
 - Teacher profile and Indonesia timezone onboarding.
-- Student create, edit, archive, WhatsApp number normalization, and a versioned billing plan.
-- Row Level Security for every domain table, with database mutations restricted to ownership-checking RPCs.
+- Student create, edit, archive, WhatsApp number normalization, and effective-dated billing plans.
+- Weekly schedules, one-off sessions, agenda materialization, rescheduling, absence, and teacher cancellation.
+- Session completion, short learning notes, revision history, and student learning history.
+- Monthly and per-session invoices, partial payments, payment reversals, and reasoned invoice adjustments.
+- Report and payment-reminder previews with manual copy and WhatsApp handoff.
+- Row Level Security for domain tables, with writes restricted to ownership-checking database RPCs.
 
-Schedule materialization, session notes, invoicing, and payment recording remain subsequent vertical slices in the delivery plan in `PRD-dan-Teknis.md`.
+Optional session photos, comparative topic progress, monthly income summaries, and CSV export are P1 work described in `PRD-dan-Teknis.md`.

@@ -4,14 +4,19 @@ import {
   ArrowRight,
   CalendarDays,
   Edit3,
-  MessageCircle,
   WalletCards,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ArchiveStudentForm } from "@/features/students/archive-student-form";
+import { EndScheduleRuleForm } from "@/features/scheduling/forms";
+import {
+  getStudentSchedulesAndSessions,
+  getTeacherProfile,
+} from "@/features/scheduling/queries";
 import { getStudent } from "@/features/students/queries";
+import { dateInputValueInTimezone } from "@/lib/dates";
 import {
   formatLocalDate,
   formatRupiah,
@@ -20,17 +25,31 @@ import {
 
 export const metadata: Metadata = { title: "Detail murid" };
 
+function formatSessionDay(value: string, timezone: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "short",
+    timeZone: timezone,
+  }).format(new Date(value));
+}
+
 export default async function StudentDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const result = await getStudent(id);
+
+  const [result, profile] = await Promise.all([
+    getStudent(id),
+    getTeacherProfile(),
+  ]);
 
   if (!result) notFound();
 
   const { student, plans } = result;
+  const activity = await getStudentSchedulesAndSessions(student.id);
+  const today = dateInputValueInTimezone(new Date(), profile.timezone);
   const currentPlan = getCurrentBillingPlan(plans);
 
   const billingMode =
@@ -50,14 +69,90 @@ export default async function StudentDetailPage({
           </p>
         </div>
         {!student.archived_at && (
-          <Link
-            className="button button-secondary"
-            href={`/students/${student.id}/edit`}
-          >
-            <Edit3 aria-hidden="true" size={17} /> Ubah data
-          </Link>
+          <div className="student-actions">
+            <Link
+              className="button button-secondary button-small"
+              href={`/students/${student.id}/edit`}
+            >
+              <Edit3 aria-hidden="true" size={17} /> Ubah data
+            </Link>
+            <Link
+              className="button button-secondary button-small"
+              href={`/students/${student.id}/schedule/new`}
+            >
+              <CalendarDays aria-hidden="true" size={17} /> Atur jadwal
+            </Link>
+            <Link
+              className="button button-small"
+              href={`/students/${student.id}/sessions/new`}
+            >
+              <ArrowRight aria-hidden="true" size={17} /> Tambah sesi
+            </Link>
+          </div>
         )}
       </div>
+
+      <div className="section-heading">
+        <h2>Jadwal mingguan</h2>
+        {!student.archived_at ? (
+          <Link
+            className="inline-link"
+            href={`/students/${student.id}/schedule/new`}
+          >
+            Tambah jadwal <ArrowRight aria-hidden="true" size={15} />
+          </Link>
+        ) : null}
+      </div>
+      {activity.rules.length > 0 ? (
+        <section className="schedule-list" aria-label="Jadwal rutin">
+          {activity.rules.map((rule) => (
+            <article className="card schedule-card" key={rule.id}>
+              <div>
+                <p className="schedule-title">
+                  {
+                    [
+                      "",
+                      "Senin",
+                      "Selasa",
+                      "Rabu",
+                      "Kamis",
+                      "Jumat",
+                      "Sabtu",
+                      "Minggu",
+                    ][rule.weekday]
+                  }{" "}
+                  · {rule.local_start.slice(0, 5)}
+                </p>
+                <p className="muted-copy">
+                  {rule.duration_minutes} menit · mulai{" "}
+                  {formatLocalDate(rule.effective_from)}
+                  {rule.effective_until
+                    ? " · sampai " + formatLocalDate(rule.effective_until)
+                    : ""}
+                </p>
+              </div>
+              <span className={"badge " + (rule.active ? "" : "badge-muted")}>
+                {rule.active ? "Aktif" : "Berakhir"}
+              </span>
+              {rule.active && !student.archived_at ? (
+                <EndScheduleRuleForm
+                  effectiveFrom={rule.effective_from}
+                  ruleId={rule.id}
+                  today={today}
+                />
+              ) : null}
+            </article>
+          ))}
+        </section>
+      ) : (
+        <section className="card empty-state compact-empty">
+          <h2>Belum ada jadwal rutin</h2>
+          <p>
+            Buat pola mingguan, lalu sesi akan muncul otomatis dalam 60 hari ke
+            depan.
+          </p>
+        </section>
+      )}
 
       {student.archived_at && (
         <p className="archive-banner">
@@ -176,12 +271,56 @@ export default async function StudentDetailPage({
           <span>Tagihan</span>
           <ArrowRight aria-hidden="true" size={17} />
         </Link>
-        <span className="card quick-action is-unavailable">
-          <MessageCircle aria-hidden="true" size={19} />
-          <span>Bagikan laporan</span>
-          <span className="soon-label">Setelah sesi dicatat</span>
-        </span>
+        <Link
+          className="card quick-action"
+          href={`/students/${student.id}/sessions/new`}
+        >
+          <ArrowRight aria-hidden="true" size={19} />
+          <span>Tambah sesi</span>
+          <ArrowRight aria-hidden="true" size={17} />
+        </Link>
       </div>
+
+      <div className="section-heading">
+        <h2>Riwayat sesi</h2>
+        <span className="muted-copy">30 terbaru</span>
+      </div>
+      {activity.sessions.length > 0 ? (
+        <section className="history-list card" aria-label="Riwayat sesi murid">
+          {activity.sessions.map((session) => {
+            const label =
+              session.state === "completed"
+                ? "Selesai"
+                : session.state === "student_absent"
+                  ? "Izin"
+                  : session.state === "teacher_cancelled"
+                    ? "Dibatalkan"
+                    : new Date(session.starts_at).getTime() < Date.now()
+                      ? "Belum dicatat"
+                      : "Terjadwal";
+
+            return (
+              <Link
+                className="history-row"
+                href={`/sessions/${session.id}`}
+                key={session.id}
+              >
+                <span>
+                  <strong>
+                    {formatSessionDay(session.starts_at, profile.timezone)}
+                  </strong>
+                  <small>{session.topic?.name ?? label}</small>
+                </span>
+                <span className="badge">{label}</span>
+              </Link>
+            );
+          })}
+        </section>
+      ) : (
+        <p className="muted-copy">
+          Sesi yang sudah dicatat akan tampil di sini.
+        </p>
+      )}
 
       {!student.archived_at && (
         <div className="section-heading">
