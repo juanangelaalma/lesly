@@ -17,16 +17,16 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-3 rounded-[var(--radius-card)] border-2 border-dashed border-line-control bg-surface-alt/60 px-6 py-8 text-center",
+        "flex flex-col items-center gap-3 rounded-[var(--radius-card)] border-2 border-dashed border-line-control bg-surface-alt/60 px-5 py-10 text-center",
         className,
       )}
     >
-      {icon ? <div className="text-ink-muted">{icon}</div> : null}
+      {icon ? <div aria-hidden className="mb-1 grid size-16 place-items-center rounded-[var(--radius-control)] bg-surface text-ink-muted">{icon}</div> : null}
       <div className="flex flex-col gap-1">
         <p className="font-display text-lg font-semibold">{title}</p>
-        {description ? <p className="max-w-xs text-sm text-ink-muted">{description}</p> : null}
+        {description ? <p className="max-w-sm text-sm leading-relaxed text-ink-muted">{description}</p> : null}
       </div>
-      {action}
+      {action ? <div className="mt-2 flex max-w-full flex-wrap justify-center gap-2">{action}</div> : null}
     </div>
   );
 }

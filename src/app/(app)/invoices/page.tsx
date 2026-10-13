@@ -33,7 +33,7 @@ export default async function InvoicesPage({ searchParams }: PageProps<"/invoice
       <PageHeader title="Tagihan" subtitle={formatPeriod(month)} />
       <AutoSync action={ensureInvoicesFor.bind(null, month)} label="Menyiapkan tagihan bulan ini" />
 
-      <nav aria-label="Pilih bulan" className="mb-4 flex items-center justify-between gap-2">
+      <nav aria-label="Pilih bulan" className="mb-6 flex items-center justify-between gap-2 rounded-[var(--radius-control)] border-2 border-line bg-surface-alt p-2">
         <ButtonLink href={`/invoices?month=${addMonths(month, -1).slice(0, 7)}`} variant="secondary" size="sm" aria-label="Bulan sebelumnya">
           <CaretLeftIcon size={18} weight="bold" aria-hidden />
         </ButtonLink>
@@ -47,18 +47,18 @@ export default async function InvoicesPage({ searchParams }: PageProps<"/invoice
         </ButtonLink>
       </nav>
 
-      <div className="mb-5 grid grid-cols-3 gap-2">
+      <div className="mb-6 grid grid-cols-1 gap-3 min-[480px]:grid-cols-3">
         <Card className="p-3">
           <p className="font-label text-xs font-bold text-ink-muted">Total</p>
-          <p className="tabular truncate font-display text-lg font-bold">{formatRupiah(totals.total)}</p>
+          <p className="tabular mt-1 break-words font-display text-xl font-bold">{formatRupiah(totals.total)}</p>
         </Card>
         <Card tone="teal" className="p-3">
           <p className="font-label text-xs font-bold text-ink-muted">Diterima</p>
-          <p className="tabular truncate font-display text-lg font-bold">{formatRupiah(totals.paid)}</p>
+          <p className="tabular mt-1 break-words font-display text-xl font-bold">{formatRupiah(totals.paid)}</p>
         </Card>
         <Card tone="coral" className="p-3">
           <p className="font-label text-xs font-bold text-ink-muted">Sisa</p>
-          <p className="tabular truncate font-display text-lg font-bold">{formatRupiah(totals.balance)}</p>
+          <p className="tabular mt-1 break-words font-display text-xl font-bold">{formatRupiah(totals.balance)}</p>
         </Card>
       </div>
 
@@ -76,15 +76,15 @@ export default async function InvoicesPage({ searchParams }: PageProps<"/invoice
               <li key={inv.id}>
                 <Link
                   href={`/invoices/${inv.id}`}
-                  className="interactive-row flex items-center gap-3 rounded-[var(--radius-card)] border-2 border-line bg-surface p-4 shadow-clay"
+                  className="interactive-row flex flex-wrap items-center gap-3 rounded-[var(--radius-card)] border-2 border-line bg-surface p-4 shadow-clay"
                 >
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-display text-base font-semibold">{inv.student?.name ?? "Murid"}</span>
+                  <span className="min-w-0 flex-1 basis-32">
+                    <span className="block font-display text-base font-semibold">{inv.student?.name ?? "Murid"}</span>
                     <span className="tabular block text-sm text-ink-muted">
                       {formatRupiah(inv.paid)} dari {formatRupiah(inv.total)}
                     </span>
                   </span>
-                  <span className="flex flex-col items-end gap-1">
+                  <span className="flex max-w-full flex-col items-end gap-1">
                     <Badge tone={status.tone}>{status.label}</Badge>
                     {inv.balance > 0 ? <span className="tabular text-sm font-semibold">{formatRupiah(inv.balance)}</span> : null}
                   </span>

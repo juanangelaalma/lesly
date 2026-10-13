@@ -1,8 +1,8 @@
-import type { ComponentProps, ReactNode } from "react";
+import { cloneElement, isValidElement, type ComponentProps, type ReactNode } from "react";
 import { cn } from "./cn";
 
 const control =
-  "w-full rounded-[var(--radius-control)] border-2 border-line-control bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-muted transition-colors duration-150 focus:border-ink focus:outline-3 focus:outline-offset-2 focus:outline-ink aria-[invalid=true]:border-danger disabled:bg-surface-alt";
+  "w-full rounded-[var(--radius-control)] border-2 border-line-control bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-muted transition-colors duration-150 focus:border-ink focus:outline-3 focus:outline-offset-2 focus:outline-ink aria-[invalid=true]:border-danger disabled:cursor-not-allowed disabled:bg-surface-alt disabled:text-ink-muted";
 
 type FieldProps = {
   label: string;
@@ -16,19 +16,25 @@ type FieldProps = {
 
 export function Field({ label, htmlFor, hint, errors, optional, children, className }: FieldProps) {
   const describedBy = errors?.length ? `${htmlFor}-error` : hint ? `${htmlFor}-hint` : undefined;
+  const controlChild = isValidElement<{ "aria-describedby"?: string; "aria-invalid"?: boolean }>(children)
+    ? cloneElement(children, {
+        "aria-describedby": [children.props["aria-describedby"], describedBy].filter(Boolean).join(" ") || undefined,
+        "aria-invalid": errors?.length ? true : children.props["aria-invalid"],
+      })
+    : children;
   return (
-    <div className={cn("flex flex-col gap-1.5", className)} data-described-by={describedBy}>
+    <div className={cn("flex min-w-0 flex-col gap-2", className)}>
       <label htmlFor={htmlFor} className="font-label text-sm font-bold text-ink">
         {label}
         {optional ? <span className="ml-1 font-semibold text-ink-muted">(opsional)</span> : null}
       </label>
-      {children}
+      {controlChild}
       {errors?.length ? (
         <p id={`${htmlFor}-error`} className="text-sm text-danger">
           {errors[0]}
         </p>
       ) : hint ? (
-        <p id={`${htmlFor}-hint`} className="text-sm text-ink-muted">
+        <p id={`${htmlFor}-hint`} className="text-sm leading-relaxed text-ink-muted">
           {hint}
         </p>
       ) : null}
@@ -77,9 +83,9 @@ export function ChoiceGroup({
   columns?: 2 | 3;
 }) {
   return (
-    <fieldset className="flex flex-col gap-1.5">
+    <fieldset className="flex min-w-0 flex-col gap-1.5" aria-describedby={errors?.length ? `${name}-error` : undefined}>
       <legend className="mb-1.5 font-label text-sm font-bold text-ink">{legend}</legend>
-      <div className={cn("grid gap-2", columns === 3 ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-2")}>
+      <div className={cn("grid gap-2", columns === 3 ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-1 min-[360px]:grid-cols-2")}>
         {options.map((option) => (
           <label key={option.value} className="relative block cursor-pointer">
             <input
@@ -97,7 +103,7 @@ export function ChoiceGroup({
           </label>
         ))}
       </div>
-      {errors?.length ? <p className="text-sm text-danger">{errors[0]}</p> : null}
+      {errors?.length ? <p id={`${name}-error`} className="text-sm text-danger">{errors[0]}</p> : null}
     </fieldset>
   );
 }

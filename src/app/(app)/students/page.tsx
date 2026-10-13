@@ -43,15 +43,14 @@ export default async function StudentsPage({ searchParams }: PageProps<"/student
         <Input id="q" name="q" type="search" defaultValue={q} placeholder="Cari nama murid" className="pl-11" />
       </form>
 
-      <div className="mb-4 grid grid-cols-2 gap-2 rounded-[var(--radius-control)] border-2 border-line bg-surface-alt p-1" role="tablist">
+      <div className="mb-6 grid grid-cols-2 gap-2 rounded-[var(--radius-control)] border-2 border-line bg-surface-alt p-1" aria-label="Status murid">
         {(["active", "archived"] as const).map((value) => (
           <Link
             key={value}
-            role="tab"
-            aria-selected={status === value}
+            aria-current={status === value ? "page" : undefined}
             href={value === "active" ? "/students" : "/students?status=archived"}
             className={cn(
-              "flex min-h-10 items-center justify-center rounded-[var(--radius-inner)] font-label text-sm font-bold",
+              "flex min-h-11 items-center justify-center rounded-[var(--radius-inner)] font-label text-sm font-bold",
               status === value ? "border-2 border-ink bg-surface shadow-clay-bold-pressed" : "text-ink-muted",
             )}
           >
@@ -81,19 +80,19 @@ export default async function StudentsPage({ searchParams }: PageProps<"/student
               <li key={student.id}>
                 <Link
                   href={`/students/${student.id}`}
-                  className="interactive-row flex items-center gap-3 rounded-[var(--radius-nested-card)] border-2 border-line bg-surface p-4 shadow-clay"
+                  className="interactive-row flex flex-wrap items-center gap-3 rounded-[var(--radius-card)] border-2 border-line bg-surface p-4 shadow-clay"
                 >
                   <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-inner)] border-2 border-ink bg-purple-soft font-display text-lg font-bold">
                     {student.name.charAt(0).toUpperCase()}
                   </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-display text-base font-semibold">{student.name}</span>
+                  <span className="min-w-0 flex-1 basis-24">
+                    <span className="block font-display text-base font-semibold">{student.name}</span>
                     <span className="block truncate text-sm text-ink-muted">
                       {[student.grade, student.subject].filter(Boolean).join(" · ") || "Belum ada kelas/mapel"}
                     </span>
                   </span>
                   {plan ? (
-                    <span className="flex flex-col items-end gap-1">
+                    <span className="flex max-w-full flex-col items-end gap-1">
                       <Badge tone={plan.mode === "monthly" ? "purple" : "gold"}>{BILLING_MODE_LABEL[plan.mode]}</Badge>
                       <span className="tabular text-sm font-semibold">{formatRupiah(plan.amount)}</span>
                     </span>

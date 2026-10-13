@@ -1,0 +1,36 @@
+/* Application-only styles. The standalone landing page does not load this file. */
+.app-shell {
+  --radius-nested-card: var(--radius-card);
+}
+.app-shell ::selection,
+.auth-shell ::selection {
+  background: var(--color-teal);
+  color: var(--color-ink);
+}
+.app-shell input,
+.app-shell textarea,
+.auth-shell input {
+  caret-color: var(--color-ink);
+}
+.app-shell main,
+.auth-shell {
+  overflow-wrap: anywhere;
+}
+.app-shell .interactive-row {
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+@media (hover: hover) {
+  .app-shell .interactive-row:hover {
+    border-color: var(--color-line-control);
+  }
+  .app-shell .pressable:hover:not(:disabled),
+  .auth-shell .pressable:hover:not(:disabled) {
+    filter: brightness(0.98);
+  }
+}
+@media (min-width: 1024px) {
+  .app-shell {
+    padding-left: 15rem;
+    padding-bottom: 3rem;
+  }
+}

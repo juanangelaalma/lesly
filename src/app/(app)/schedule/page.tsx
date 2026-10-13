@@ -41,7 +41,7 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
         }
       />
       <AutoSync action={syncScheduleWindow} label="Menyiapkan jadwal" />
-      <nav aria-label="Pilih minggu" className="mb-4 flex items-center justify-between gap-2">
+      <nav aria-label="Pilih minggu" className="mb-6 flex items-center justify-between gap-2 rounded-[var(--radius-control)] border-2 border-line bg-surface-alt p-2">
         <ButtonLink href={`/schedule?week=${addDays(weekStart, -7)}`} variant="secondary" size="sm" aria-label="Minggu sebelumnya">
           <CaretLeftIcon size={18} weight="bold" aria-hidden />
         </ButtonLink>
@@ -55,19 +55,19 @@ export default async function SchedulePage({ searchParams }: PageProps<"/schedul
         </ButtonLink>
       </nav>
 
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-6">
         {days.map((day) => {
           const list = byDay.get(day) ?? [];
           return (
             <section key={day} aria-label={formatDateLong(day)}>
-              <h2 className="mb-2 flex items-center gap-2 font-display text-base font-semibold">
+              <h2 className="mb-3 flex flex-wrap items-center gap-2 font-display text-base font-semibold">
                 {formatDateLong(day)}
                 {day === today ? (
                   <span className="rounded-full border-2 border-ink bg-teal px-2 font-label text-xs font-bold">Hari ini</span>
                 ) : null}
               </h2>
               {list.length === 0 ? (
-                <p className="rounded-[var(--radius-control)] border-2 border-dashed border-line px-4 py-3 text-sm text-ink-muted">Kosong</p>
+                <p className="rounded-[var(--radius-control)] border-2 border-dashed border-line px-4 py-3 text-sm text-ink-muted">Tidak ada sesi</p>
               ) : (
                 <ul className="flex flex-col gap-2">
                   {list.map((s) => (

@@ -47,7 +47,7 @@ export function StudentForm(props: Props) {
         <Field label="Nama murid" htmlFor="name" errors={err("name")}>
           <Input id="name" name="name" defaultValue={d?.name} required maxLength={80} autoComplete="off" invalid={!!err("name")} />
         </Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
           <Field label="Kelas" htmlFor="grade" optional errors={err("grade")}>
             <Input id="grade" name="grade" defaultValue={d?.grade} maxLength={40} placeholder="SD 5" />
           </Field>
@@ -100,7 +100,7 @@ export function StudentForm(props: Props) {
               { value: "per_session", label: "Per sesi", description: "Hanya sesi selesai yang ditagih" },
             ]}
           />
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2">
             <Field label="Tarif (Rp)" htmlFor="amount" errors={err("amount")}>
               <Input id="amount" name="amount" inputMode="numeric" placeholder="400.000" required invalid={!!err("amount")} className="tabular" />
             </Field>

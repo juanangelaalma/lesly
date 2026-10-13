@@ -36,20 +36,20 @@ export default async function TodayPage() {
 
   return (
     <>
-      <header className="pb-4">
-        <p className="text-sm text-ink-muted">{formatDateLong(today)}</p>
+      <header className="pb-6">
         <h1 className="font-display text-3xl leading-tight font-bold">Halo, {tutor.profile.display_name}</h1>
+        <p className="mt-2 text-sm text-ink-muted">{formatDateLong(today)}</p>
         <AutoSync action={syncScheduleWindow} label="Menyiapkan jadwal" />
       </header>
 
-      <div className="mb-5 grid grid-cols-2 gap-3">
+      <div className="mb-6 grid grid-cols-1 gap-3 min-[360px]:grid-cols-2">
         <Card tone="purple" className="p-3.5">
           <p className="font-label text-xs font-bold text-ink-muted">Sisa sesi hari ini</p>
           <p className="tabular font-display text-2xl font-bold">{remaining}</p>
         </Card>
         <Link href="/invoices" className="pressable block rounded-[var(--radius-card)] border-2 border-line bg-coral-soft p-3.5 shadow-clay active:shadow-clay-pressed">
           <p className="font-label text-xs font-bold text-ink-muted">Belum dibayar</p>
-          <p className="tabular truncate font-display text-2xl font-bold">{formatRupiah(outstanding)}</p>
+          <p className="tabular break-words font-display text-2xl font-bold">{formatRupiah(outstanding)}</p>
         </Link>
       </div>
 
@@ -100,8 +100,8 @@ export default async function TodayPage() {
               <ul className="flex flex-col gap-2">
                 {upcoming.map((s) => (
                   <li key={s.id}>
-                    <Link href={`/sessions/${s.id}`} className="flex items-center justify-between gap-2 rounded-[var(--radius-control)] border-2 border-line bg-surface px-4 py-3">
-                      <span className="truncate font-semibold">{s.students?.name}</span>
+                    <Link href={`/sessions/${s.id}`} className="interactive-row flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius-control)] border-2 border-line bg-surface px-4 py-3">
+                      <span className="min-w-0 font-semibold">{s.students?.name}</span>
                       <span className="tabular shrink-0 text-sm text-ink-muted">
                         {formatDateLong(localDate(s.starts_at, tutor.tz)).split(",")[0]}, {new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: tutor.tz }).format(new Date(s.starts_at))}
                       </span>
