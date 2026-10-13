@@ -76,7 +76,7 @@ export default async function InvoicesPage({ searchParams }: PageProps<"/invoice
               <li key={inv.id}>
                 <Link
                   href={`/invoices/${inv.id}`}
-                  className="pressable flex items-center gap-3 rounded-[var(--radius-card)] border-2 border-line bg-surface p-4 shadow-clay active:shadow-clay-pressed"
+                  className="interactive-row flex items-center gap-3 rounded-[var(--radius-card)] border-2 border-line bg-surface p-4 shadow-clay"
                 >
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-display text-base font-semibold">{inv.student?.name ?? "Murid"}</span>

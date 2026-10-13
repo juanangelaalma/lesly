@@ -6,13 +6,13 @@ export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "gold
 export type ButtonSize = "md" | "sm";
 
 const base =
-  "pressable inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] border-2 font-label font-bold whitespace-nowrap select-none disabled:cursor-not-allowed disabled:opacity-50";
+  "pressable inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] border-2 font-label font-bold whitespace-nowrap select-none disabled:cursor-not-allowed disabled:bg-surface-alt disabled:bg-none disabled:shadow-none disabled:opacity-50";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "border-ink bg-teal text-ink shadow-clay-bold active:shadow-clay-bold-pressed",
-  gold: "border-ink bg-gold text-ink shadow-clay-bold active:shadow-clay-bold-pressed",
-  secondary: "border-ink bg-surface text-ink shadow-clay active:shadow-clay-pressed",
-  danger: "border-danger bg-surface text-danger shadow-clay active:shadow-clay-pressed",
+  primary: "clay-teal border-ink bg-teal text-ink shadow-clay-bold enabled:active:shadow-clay-bold-pressed",
+  gold: "clay-gold border-ink bg-gold text-ink shadow-clay-bold enabled:active:shadow-clay-bold-pressed",
+  secondary: "clay-raised border-ink bg-surface text-ink shadow-clay enabled:active:shadow-clay-pressed",
+  danger: "clay-raised border-danger bg-surface text-danger shadow-clay enabled:active:shadow-clay-pressed",
   ghost: "border-transparent bg-transparent text-ink-muted hover:bg-surface-alt",
 };
 
@@ -25,14 +25,23 @@ export function buttonClass(variant: ButtonVariant = "primary", size: ButtonSize
   return cn(base, variants[variant], sizes[size], className);
 }
 
-type ButtonProps = ComponentProps<"button"> & { variant?: ButtonVariant; size?: ButtonSize };
+type ButtonProps = ComponentProps<"button"> & { variant?: ButtonVariant; size?: ButtonSize; static?: boolean };
 
-export function Button({ variant, size, className, type = "button", ...props }: ButtonProps) {
-  return <button type={type} className={buttonClass(variant, size, className)} {...props} />;
+export function Button({ variant, size, static: isStatic, className, type = "button", ...props }: ButtonProps) {
+  return <button type={type} data-static={isStatic || undefined} className={buttonClass(variant, size, className)} {...props} />;
 }
 
-type ButtonLinkProps = ComponentProps<typeof Link> & { variant?: ButtonVariant; size?: ButtonSize };
+type ButtonLinkProps = ComponentProps<typeof Link> & { variant?: ButtonVariant; size?: ButtonSize; static?: boolean };
 
-export function ButtonLink({ variant, size, className, ...props }: ButtonLinkProps) {
-  return <Link className={buttonClass(variant, size, className)} {...props} />;
+export function ButtonLink({ variant = "primary", size, static: isStatic, className, ...props }: ButtonLinkProps) {
+  const pressedShadow = variant === "primary" || variant === "gold"
+    ? "active:shadow-clay-bold-pressed"
+    : variant === "ghost" ? undefined : "active:shadow-clay-pressed";
+  return (
+    <Link
+      data-static={isStatic || undefined}
+      className={cn(buttonClass(variant, size), pressedShadow, className)}
+      {...props}
+    />
+  );
 }

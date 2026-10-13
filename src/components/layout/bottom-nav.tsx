@@ -28,7 +28,7 @@ export function BottomNav() {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "pressable flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-[var(--radius-inner)] border-2 font-label text-xs font-bold",
+                  "flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-[var(--radius-inner)] border-2 font-label text-xs font-bold",
                   active ? "border-ink bg-teal shadow-clay-bold-pressed" : "border-transparent text-ink-muted hover:bg-surface-alt",
                 )}
               >

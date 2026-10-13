@@ -5,7 +5,7 @@
   --color-surface: #fefcf9;
   --color-surface-alt: #f5ede3;
   --color-line: #e8dfd3;
-  --color-line-control: #b9ad9e;
+  --color-line-control: #807362;
   --color-ink: #2d3047;
   --color-ink-muted: #575964;
   --color-ink-faint: #9b9dab;
@@ -29,11 +29,21 @@
   --radius-card: 20px;
   --radius-control: 16px;
   --radius-inner: 12px;
+  --radius-nested-card: 30px;
 
   --shadow-clay: 3px 3px 0 0 var(--color-shadow);
   --shadow-clay-pressed: 1px 1px 0 0 var(--color-shadow);
   --shadow-clay-bold: 3px 3px 0 0 var(--color-ink);
   --shadow-clay-bold-pressed: 1px 1px 0 0 var(--color-ink);
+}
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --motion-press: 150ms;
+  --surface-raised: linear-gradient(to bottom, #fff 0%, #fefcf9 13%, #fefcf9 87%, #e8e4df 100%);
+  --surface-teal: linear-gradient(to bottom, #c4e9e3 0%, #7ecec5 13%, #7ecec5 87%, #6db8b0 100%);
+  --surface-gold: linear-gradient(to bottom, #f3e3bc 0%, #e8c77b 13%, #e8c77b 87%, #d4af5f 100%);
+  --motion-feedback: 180ms;
 }
 
 @layer base {
@@ -56,7 +66,7 @@
     text-wrap: pretty;
   }
   :focus-visible {
-    outline: 3px solid var(--color-teal-deep);
+    outline: 3px solid var(--color-ink);
     outline-offset: 2px;
   }
   input, textarea, select, button {
@@ -69,25 +79,74 @@
     font-variant-numeric: tabular-nums;
   }
   .pressable {
-    transition-property: transform, box-shadow, background-color;
-    transition-duration: 120ms;
-    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+    transition: background-color 150ms ease-out;
   }
-  .pressable:active:not(:disabled) {
-    transform: translate(2px, 2px) scale(0.97);
+  .clay-raised { background-image: var(--surface-raised); }
+  .clay-teal { background-image: var(--surface-teal); }
+  .clay-gold { background-image: var(--surface-gold); }
+  .interactive-row:active {
+    background-color: var(--color-surface-alt);
+  }
+  @media (hover: hover) {
+    .interactive-row:hover {
+      background-color: var(--color-surface-alt);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pressable:not([data-static]) {
+      transition: transform var(--motion-press) ease-out,
+        background-color 150ms ease-out;
+    }
+    .pressable:not([data-static]):active:not(:disabled):not([aria-disabled="true"]) {
+      transform: translate(2px, 2px) scale(0.96);
+    }
   }
   .safe-bottom {
     padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+/* Native details remain usable when ::details-content is unsupported. */
+.disclosure-caret {
+  transition: transform var(--motion-feedback) var(--ease-out);
+}
+.disclosure[open] .disclosure-caret {
+  transform: rotate(180deg);
+}
+.disclosure::details-content {
+  opacity: 0;
+  transition: opacity var(--motion-feedback) var(--ease-out),
+    content-visibility var(--motion-feedback) allow-discrete;
+}
+.disclosure[open]::details-content {
+  opacity: 1;
+}
+
+/* Mount feedback without timers, hydration state, or delayed interaction. */
+.feedback-enter {
+  transition: opacity var(--motion-feedback) var(--ease-out),
+    transform var(--motion-feedback) var(--ease-out);
+  @starting-style {
+    opacity: 0;
+    transform: translateY(4px);
   }
-  .pressable:active:not(:disabled) {
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin, .animate-pulse {
+    animation: none;
+  }
+  .pressable:active:not(:disabled),
+  .disclosure[open] .disclosure-caret {
     transform: none;
+  }
+  .disclosure-caret {
+    transition: none;
+  }
+  .feedback-enter {
+    transition-property: opacity;
+    @starting-style {
+      transform: none;
+    }
   }
 }

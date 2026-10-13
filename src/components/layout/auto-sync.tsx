@@ -23,7 +23,7 @@ export function AutoSync({ action, label }: { action: () => Promise<boolean>; la
 
   if (!pending) return null;
   return (
-    <p role="status" className="flex items-center gap-2 text-sm text-ink-muted">
+    <p role="status" className="feedback-enter flex items-center gap-2 text-sm text-ink-muted">
       <span className="size-3 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden />
       {label}
     </p>

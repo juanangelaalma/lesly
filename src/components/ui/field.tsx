@@ -2,7 +2,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "./cn";
 
 const control =
-  "w-full rounded-[var(--radius-control)] border-2 border-line-control bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-faint transition-[border-color,box-shadow] duration-150 focus:border-teal-deep focus:shadow-clay focus:outline-none aria-[invalid=true]:border-danger disabled:bg-surface-alt";
+  "w-full rounded-[var(--radius-control)] border-2 border-line-control bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-muted transition-colors duration-150 focus:border-ink focus:outline-3 focus:outline-offset-2 focus:outline-ink aria-[invalid=true]:border-danger disabled:bg-surface-alt";
 
 type FieldProps = {
   label: string;
@@ -90,7 +90,7 @@ export function ChoiceGroup({
               className="peer sr-only"
               required
             />
-            <span className="pressable flex min-h-12 flex-col justify-center rounded-[var(--radius-control)] border-2 border-line-control bg-surface px-4 py-2.5 peer-checked:border-ink peer-checked:bg-teal-soft peer-checked:shadow-clay-bold peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-teal-deep">
+            <span className="pressable flex min-h-12 flex-col justify-center rounded-[var(--radius-control)] border-2 border-line-control bg-surface px-4 py-2.5 peer-checked:border-ink peer-checked:bg-teal-soft peer-checked:shadow-clay-bold peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink">
               <span className="font-label text-[15px] font-bold">{option.label}</span>
               {option.description ? <span className="text-sm text-ink-muted">{option.description}</span> : null}
             </span>

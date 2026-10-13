@@ -15,10 +15,10 @@ export function Disclosure({
   defaultOpen?: boolean;
 }) {
   return (
-    <details open={defaultOpen} className={cn("group rounded-[var(--radius-control)] border-2 border-line bg-surface-alt/60", className)}>
+    <details open={defaultOpen} className={cn("disclosure group rounded-[var(--radius-control)] border-2 border-line bg-surface-alt/60", className)}>
       <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-2 px-4 font-label text-[15px] font-bold [&::-webkit-details-marker]:hidden">
         {summary}
-        <CaretDownIcon size={18} weight="bold" aria-hidden className="transition-transform duration-150 group-open:rotate-180" />
+        <CaretDownIcon size={18} weight="bold" aria-hidden className="disclosure-caret" />
       </summary>
       <div className="px-4 pt-1 pb-4">{children}</div>
     </details>

@@ -27,7 +27,7 @@ export function SessionCard({ id, startsAt, durationMinutes, status, rescheduled
     <Link
       href={`/sessions/${id}`}
       className={cn(
-        "pressable flex gap-3 rounded-[var(--radius-card)] border-2 bg-surface p-4 shadow-clay active:shadow-clay-pressed",
+        "interactive-row flex gap-3 rounded-[var(--radius-nested-card)] border-2 bg-surface p-4 shadow-clay",
         status === "scheduled" ? "border-line" : "border-line opacity-80",
       )}
     >

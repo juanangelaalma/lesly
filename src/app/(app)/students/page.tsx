@@ -81,7 +81,7 @@ export default async function StudentsPage({ searchParams }: PageProps<"/student
               <li key={student.id}>
                 <Link
                   href={`/students/${student.id}`}
-                  className="pressable flex items-center gap-3 rounded-[var(--radius-card)] border-2 border-line bg-surface p-4 shadow-clay active:shadow-clay-pressed"
+                  className="interactive-row flex items-center gap-3 rounded-[var(--radius-nested-card)] border-2 border-line bg-surface p-4 shadow-clay"
                 >
                   <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-inner)] border-2 border-ink bg-purple-soft font-display text-lg font-bold">
                     {student.name.charAt(0).toUpperCase()}

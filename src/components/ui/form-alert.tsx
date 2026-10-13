@@ -6,13 +6,13 @@ export function FormAlert({ state, className }: { state: FormState<unknown>; cla
   if (state.ok) {
     if (!state.message) return null;
     return (
-      <p role="status" className={cn("rounded-[var(--radius-inner)] border-2 border-teal-deep/40 bg-teal-soft px-4 py-3 text-sm", className)}>
+      <p role="status" className={cn("feedback-enter rounded-[var(--radius-inner)] border-2 border-teal-deep/40 bg-teal-soft px-4 py-3 text-sm", className)}>
         {state.message}
       </p>
     );
   }
   return (
-    <p role="alert" className={cn("rounded-[var(--radius-inner)] border-2 border-coral bg-coral-soft px-4 py-3 text-sm text-ink", className)}>
+    <p role="alert" className={cn("feedback-enter rounded-[var(--radius-inner)] border-2 border-coral bg-coral-soft px-4 py-3 text-sm text-ink", className)}>
       {state.message}
     </p>
   );

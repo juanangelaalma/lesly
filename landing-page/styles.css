@@ -19,6 +19,9 @@
   --display: 'Fredoka', ui-rounded, system-ui, sans-serif;
   --body: 'Inter', system-ui, sans-serif;
   --label: 'Nunito', system-ui, sans-serif;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --motion-press: 150ms;
+  --motion-feedback: 180ms;
   --raised: linear-gradient(to bottom, #fff 0%, #fefcf9 13%, #fefcf9 87%, #e8e4df 100%);
 }
 * { box-sizing: border-box; }
@@ -45,10 +48,22 @@ p { text-wrap: pretty; }
 .brand-dot { margin-left: -9px; }
 .site-header nav { display: flex; gap: 32px; font: 800 15px/1.4 var(--label); }
 .site-header nav a { padding-block: 12px; }
-.site-header nav a:hover, .text-link:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
-.button { min-height: 52px; display: inline-flex; align-items: center; justify-content: center; gap: 16px; padding: 16px 24px; background: linear-gradient(#c4e9e3 0%, var(--teal) 13%, var(--teal) 87%, #6db8b0 100%); color: var(--accent-ink); border: var(--edge) solid var(--ink); border-radius: var(--radius); box-shadow: 3px 3px 0 var(--ink); font: 800 16px/1.3 var(--label); transition: transform 80ms ease-out, box-shadow 80ms ease-out; }
-.button:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ink); }
-.button:active { transform: translate(2px, 2px) scale(.97); box-shadow: 1px 1px 0 var(--ink); }
+@media (hover: hover) {
+  .site-header nav a:hover, .text-link:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+}
+.button { min-height: 52px; display: inline-flex; align-items: center; justify-content: center; gap: 16px; padding: 16px 24px; background: linear-gradient(#c4e9e3 0%, var(--teal) 13%, var(--teal) 87%, #6db8b0 100%); color: var(--accent-ink); border: var(--edge) solid var(--ink); border-radius: var(--radius); box-shadow: 3px 3px 0 var(--ink); font: 800 16px/1.3 var(--label); transition: background-color 150ms ease-out; }
+@media (prefers-reduced-motion: no-preference) {
+  .button { transition: transform var(--motion-press) ease-out; }
+  .button:not(:disabled):not([aria-disabled="true"]):active { transform: translate(2px, 2px) scale(.96); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .button:not(:disabled):not([aria-disabled="true"]):hover { box-shadow: 2px 2px 0 var(--ink); }
+}
+.button:not(:disabled):not([aria-disabled="true"]):active { box-shadow: 1px 1px 0 var(--ink); }
+.button:disabled, .button[aria-disabled="true"] { background: var(--well); box-shadow: none; opacity: .5; cursor: not-allowed; }
+.button:has(> .icon:last-child) { padding-inline-end: 22px; }
+.button-small:has(> .icon:last-child) { padding-inline-end: 18px; }
+.button .icon, .text-link .icon { stroke-width: 2.5; }
 .button-small { min-height: 44px; padding: 12px 20px; font-size: 15px; border-radius: 16px; }
 .button-secondary { background: var(--raised); box-shadow: 3px 3px 0 #d4c9bb; }
 .text-link { font: 800 16px/1.4 var(--label); padding-block: 12px; }
@@ -146,8 +161,17 @@ details { border-bottom: var(--line) solid var(--border); }
 summary { min-height: 64px; padding: 20px 36px 20px 0; font: 800 17px/1.5 var(--label); cursor: pointer; list-style: none; position: relative; }
 summary::-webkit-details-marker { display: none; }
 summary::after { content: '+'; position: absolute; right: 4px; top: 18px; font-size: 24px; line-height: 1.2; }
-details[open] summary::after { content: '−'; }
-summary:hover { text-decoration: underline; text-underline-offset: 4px; }
+summary::after { transition: transform var(--motion-feedback) var(--ease-out); }
+details[open] summary::after { transform: rotate(45deg); }
+details::details-content {
+  opacity: 0;
+  transition: opacity var(--motion-feedback) var(--ease-out),
+    content-visibility var(--motion-feedback) allow-discrete;
+}
+details[open]::details-content { opacity: 1; }
+@media (hover: hover) {
+  summary:hover { text-decoration: underline; text-underline-offset: 4px; }
+}
 details p { padding: 0 28px 24px 0; color: var(--muted); font-size: 15px; max-width: 65ch; }
 .start { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 56px 64px; background: #e3f4f1; border: var(--edge) solid var(--ink); border-radius: var(--radius-large); }
 .start h2 { font-size: clamp(32px, 3.8vw, 48px); }
@@ -235,8 +259,26 @@ details p { padding: 0 28px 24px 0; color: var(--muted); font-size: 15px; max-wi
   .feature-main { padding: 24px; }
   .privacy { flex-direction: column; }
 }
+/* First-visit hierarchy; controls remain visible and interactive throughout. */
+.hero h1, .hero-copy, .product-preview {
+  animation: hero-enter 500ms var(--ease-out) backwards;
+}
+.hero-copy { animation-delay: 50ms; }
+.product-preview { animation-delay: 100ms; }
+@keyframes hero-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { transition: none !important; }
-  .button:hover, .button:active { transform: none; }
+  .hero h1, .hero-copy, .product-preview {
+    animation: hero-fade var(--motion-feedback) var(--ease-out);
+  }
+  .button:not(:disabled):not([aria-disabled="true"]):active { transform: none; }
+  summary::after { transition: none; }
+  details[open] summary::after { transform: none; content: '−'; }
 }
